@@ -1,0 +1,1467 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>L'Arctique et le Changement Climatique</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ice: #c8e8f5;
+    --glacier: #4a9bbe;
+    --deep-ocean: #0a1628;
+    --midnight: #060e1c;
+    --arctic-white: #e8f4f8;
+    --frost: #a0cfe0;
+    --steel: #2c3e50;
+    --anthracite: #1a2332;
+    --melt: #ff6b35;
+    --aurora-green: #2ecc71;
+    --aurora-purple: #9b59b6;
+    --text-primary: #e8f4f8;
+    --text-secondary: #7fb3c8;
+    --card-bg: rgba(10, 22, 40, 0.7);
+    --card-border: rgba(74, 155, 190, 0.2);
+    --section-bg: #0d1a2e;
+  }
+  [data-theme="light"] {
+    --deep-ocean: #dceef5;
+    --midnight: #c5dfe8;
+    --arctic-white: #0a1628;
+    --frost: #1a4a6e;
+    --card-bg: rgba(200, 232, 245, 0.6);
+    --card-border: rgba(74, 155, 190, 0.4);
+    --text-primary: #0a1628;
+    --text-secondary: #1a4a6e;
+    --section-bg: #c8e8f5;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--midnight);
+    color: var(--text-primary);
+    overflow-x: hidden;
+    transition: background 0.4s, color 0.4s;
+  }
+
+  /* ─── NOISE OVERLAY ─── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 9999; opacity: 0.4;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed; top: 0; width: 100%; z-index: 1000;
+    background: rgba(6, 14, 28, 0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(74, 155, 190, 0.15);
+    padding: 1rem 2rem;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem; font-weight: 700;
+    color: var(--glacier);
+    letter-spacing: 0.05em;
+  }
+  .nav-links { display: flex; gap: 2rem; align-items: center; }
+  .nav-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.82rem; letter-spacing: 0.08em; text-transform: uppercase;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--glacier); }
+
+  .theme-toggle {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 50px; padding: 0.4rem 1rem;
+    color: var(--text-secondary); cursor: pointer;
+    font-size: 0.8rem; font-family: 'DM Mono', monospace;
+    transition: all 0.2s;
+  }
+  .theme-toggle:hover { border-color: var(--glacier); color: var(--glacier); }
+
+  /* ─── HERO ─── */
+  #hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    padding: 6rem 2rem 4rem;
+  }
+
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(74,155,190,0.15) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 40% at 20% 80%, rgba(30,80,120,0.2) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 30% at 80% 70%, rgba(10,22,40,0.4) 0%, transparent 60%),
+      var(--midnight);
+    animation: heroShift 12s ease-in-out infinite alternate;
+  }
+  @keyframes heroShift {
+    0% { background-position: 0% 0%; }
+    100% { background-position: 100% 100%; }
+  }
+
+  /* Animated aurora */
+  .aurora {
+    position: absolute; top: 0; left: 0; width: 100%; height: 60%;
+    background: linear-gradient(180deg,
+      transparent 0%,
+      rgba(46, 204, 113, 0.04) 30%,
+      rgba(74, 155, 190, 0.08) 60%,
+      transparent 100%);
+    animation: auroraPulse 8s ease-in-out infinite;
+  }
+  @keyframes auroraPulse {
+    0%, 100% { opacity: 0.3; transform: scaleX(1); }
+    50% { opacity: 1; transform: scaleX(1.05); }
+  }
+
+  /* Ice particles */
+  .ice-particles { position: absolute; inset: 0; pointer-events: none; }
+  .particle {
+    position: absolute;
+    width: 3px; height: 3px;
+    background: var(--glacier);
+    border-radius: 50%;
+    animation: float linear infinite;
+    opacity: 0;
+  }
+  @keyframes float {
+    0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.6; }
+    90% { opacity: 0.4; }
+    100% { transform: translateY(-100px) rotate(720deg); opacity: 0; }
+  }
+
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem; letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--glacier);
+    margin-bottom: 1.5rem;
+    position: relative; z-index: 2;
+    animation: fadeSlideUp 0.8s ease forwards;
+  }
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3rem, 8vw, 7rem);
+    font-weight: 900;
+    line-height: 1.0;
+    position: relative; z-index: 2;
+    animation: fadeSlideUp 0.8s 0.15s ease both;
+  }
+  .hero-title .line-accent { color: var(--glacier); display: block; }
+  .hero-subtitle {
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    color: var(--text-secondary);
+    max-width: 600px;
+    line-height: 1.7;
+    margin-top: 1.5rem;
+    position: relative; z-index: 2;
+    animation: fadeSlideUp 0.8s 0.3s ease both;
+  }
+  .hero-authors {
+    margin-top: 2.5rem;
+    padding: 1rem 2rem;
+    border: 1px solid var(--card-border);
+    border-radius: 4px;
+    backdrop-filter: blur(8px);
+    background: var(--card-bg);
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-family: 'DM Mono', monospace;
+    position: relative; z-index: 2;
+    animation: fadeSlideUp 0.8s 0.45s ease both;
+  }
+  .hero-authors strong { color: var(--glacier); }
+
+  .hero-scroll {
+    position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+    z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+    color: var(--text-secondary); font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase;
+    animation: fadeSlideUp 0.8s 0.6s ease both;
+  }
+  .scroll-line {
+    width: 1px; height: 60px;
+    background: linear-gradient(to bottom, var(--glacier), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.3; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(1.2); }
+  }
+
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── STATS BAR ─── */
+  .stats-bar {
+    background: var(--anthracite);
+    border-top: 1px solid var(--card-border);
+    border-bottom: 1px solid var(--card-border);
+    padding: 2rem 4rem;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem; text-align: center;
+  }
+  .stat-item {}
+  .stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem; font-weight: 700;
+    color: var(--glacier);
+    display: block;
+  }
+  .stat-label {
+    font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--text-secondary); margin-top: 0.3rem;
+  }
+
+  /* ─── SECTIONS ─── */
+  section {
+    padding: 6rem 2rem;
+    position: relative;
+  }
+  .container { max-width: 1100px; margin: 0 auto; }
+
+  .section-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--glacier);
+    display: inline-block;
+    margin-bottom: 1rem;
+    opacity: 0; transform: translateY(20px);
+    transition: all 0.6s ease;
+  }
+  .section-tag.visible { opacity: 1; transform: translateY(0); }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 1.5rem;
+    opacity: 0; transform: translateY(20px);
+    transition: all 0.6s 0.1s ease;
+  }
+  .section-title.visible { opacity: 1; transform: translateY(0); }
+
+  .section-lead {
+    font-size: 1.1rem; line-height: 1.8;
+    color: var(--text-secondary);
+    max-width: 700px;
+    margin-bottom: 3rem;
+    opacity: 0; transform: translateY(20px);
+    transition: all 0.6s 0.2s ease;
+  }
+  .section-lead.visible { opacity: 1; transform: translateY(0); }
+
+  /* ─── INTRO ─── */
+  #intro { background: var(--section-bg); }
+  .intro-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;
+  }
+  @media (max-width: 768px) { .intro-grid { grid-template-columns: 1fr; } }
+  .intro-visual {
+    position: relative; border-radius: 4px; overflow: hidden;
+  }
+  .arctic-diagram {
+    width: 100%; aspect-ratio: 1;
+    position: relative;
+  }
+
+  /* ─── CARDS ─── */
+  .cards-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 4px;
+    padding: 2rem;
+    position: relative; overflow: hidden;
+    transition: transform 0.3s, border-color 0.3s;
+    opacity: 0; transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease, border-color 0.3s;
+    cursor: default;
+  }
+  .card.visible { opacity: 1; transform: translateY(0); }
+  .card:hover { border-color: var(--glacier); transform: translateY(-4px); }
+  .card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--glacier), transparent);
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .card:hover::before { opacity: 1; }
+  .card-icon { font-size: 2rem; margin-bottom: 1rem; display: block; }
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem; font-weight: 700;
+    margin-bottom: 0.75rem;
+  }
+  .card-text { font-size: 0.9rem; line-height: 1.7; color: var(--text-secondary); }
+
+  /* ─── ALBEDO SECTION ─── */
+  #albedo { background: var(--midnight); }
+  .feedback-loop {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 0;
+    margin: 3rem auto;
+    max-width: 600px;
+  }
+  .loop-step {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 4px;
+    padding: 1rem 1.5rem;
+    text-align: center;
+    width: 100%;
+    position: relative;
+    opacity: 0; transform: translateX(-20px);
+    transition: all 0.5s ease;
+    font-size: 0.92rem;
+  }
+  .loop-step.visible { opacity: 1; transform: translateX(0); }
+  .loop-step strong { color: var(--glacier); display: block; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.25rem; }
+  .loop-arrow {
+    width: 2px; height: 30px;
+    background: linear-gradient(to bottom, var(--glacier), rgba(74,155,190,0.3));
+    position: relative;
+    opacity: 0; transition: opacity 0.5s 0.3s ease;
+  }
+  .loop-arrow.visible { opacity: 1; }
+  .loop-arrow::after {
+    content: '▼';
+    position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%);
+    color: var(--glacier); font-size: 0.7rem;
+  }
+  .loop-badge {
+    display: inline-block;
+    background: rgba(255, 107, 53, 0.15);
+    border: 1px solid rgba(255, 107, 53, 0.3);
+    color: #ff6b35; border-radius: 2px;
+    padding: 0.15rem 0.5rem;
+    font-size: 0.7rem; font-family: 'DM Mono', monospace; text-transform: uppercase; letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+  }
+
+  /* ─── BIODIVERSITY ─── */
+  #biodiversity { background: var(--section-bg); }
+  .species-cards {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem; margin-top: 3rem;
+  }
+  .species-card {
+    border: 1px solid var(--card-border);
+    border-radius: 4px; overflow: hidden;
+    background: var(--card-bg);
+    transition: all 0.3s;
+    opacity: 0; transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease, box-shadow 0.3s;
+  }
+  .species-card.visible { opacity: 1; transform: translateY(0); }
+  .species-card:hover { box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 30px rgba(74,155,190,0.1); }
+  .species-emoji {
+    font-size: 5rem; text-align: center; padding: 2rem;
+    display: block;
+    background: linear-gradient(180deg, rgba(74,155,190,0.05) 0%, transparent 100%);
+    transition: transform 0.3s;
+  }
+  .species-card:hover .species-emoji { transform: scale(1.1) rotate(5deg); }
+  .species-info { padding: 1.5rem; }
+  .species-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem; font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+  .species-status {
+    display: inline-block;
+    font-size: 0.7rem; font-family: 'DM Mono', monospace;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    padding: 0.15rem 0.6rem; border-radius: 2px;
+    margin-bottom: 0.75rem;
+  }
+  .status-vulnerable { background: rgba(255,200,0,0.15); color: #ffc800; border: 1px solid rgba(255,200,0,0.3); }
+  .status-endangered { background: rgba(255,107,53,0.15); color: #ff6b35; border: 1px solid rgba(255,107,53,0.3); }
+  .species-desc { font-size: 0.88rem; line-height: 1.7; color: var(--text-secondary); }
+
+  /* ─── IMPACT ─── */
+  #impact { background: var(--midnight); }
+  .impact-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 3rem; margin-top: 3rem; align-items: start;
+  }
+  @media (max-width: 768px) { .impact-grid { grid-template-columns: 1fr; } }
+  .impact-item {
+    opacity: 0; transform: translateY(20px);
+    transition: all 0.6s ease;
+  }
+  .impact-item.visible { opacity: 1; transform: translateY(0); }
+  .impact-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 4rem; font-weight: 900;
+    color: var(--glacier); opacity: 0.3;
+    line-height: 1; margin-bottom: 0.5rem;
+  }
+  .impact-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem; font-weight: 700;
+    margin-bottom: 0.75rem;
+  }
+  .impact-text { font-size: 0.9rem; line-height: 1.7; color: var(--text-secondary); }
+
+  /* Temperature chart */
+  .chart-container {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 4px;
+    padding: 1.5rem;
+    margin-top: 2rem;
+  }
+  .chart-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.15em;
+    color: var(--text-secondary); margin-bottom: 1rem;
+  }
+  .temp-chart {
+    display: flex; align-items: flex-end;
+    gap: 4px; height: 100px;
+  }
+  .temp-bar {
+    flex: 1; background: var(--glacier);
+    border-radius: 2px 2px 0 0;
+    transition: height 1s ease;
+    min-width: 4px;
+    position: relative;
+  }
+  .temp-bar:hover::after {
+    content: attr(data-val);
+    position: absolute; top: -24px; left: 50%; transform: translateX(-50%);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem; color: var(--text-primary);
+    white-space: nowrap;
+  }
+
+  /* ─── GEOPOLITICS ─── */
+  #geopolitics { background: var(--section-bg); }
+  .geo-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem; margin-top: 3rem;
+  }
+  .geo-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 4px; padding: 1.5rem;
+    opacity: 0; transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+    position: relative;
+  }
+  .geo-card.visible { opacity: 1; transform: translateY(0); }
+  .geo-card-header {
+    display: flex; align-items: center; gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  .geo-icon { font-size: 1.8rem; }
+  .geo-card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem; font-weight: 700;
+  }
+  .geo-card-text { font-size: 0.88rem; line-height: 1.7; color: var(--text-secondary); }
+
+  /* Route map SVG */
+  .route-map { margin-top: 2rem; }
+
+  /* ─── SOURCES ─── */
+  #sources { background: var(--midnight); }
+  .sources-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem; margin-top: 2rem;
+  }
+  .source-link {
+    display: flex; align-items: center; gap: 1rem;
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--card-border);
+    border-radius: 4px;
+    text-decoration: none; color: var(--text-primary);
+    background: var(--card-bg);
+    transition: all 0.2s;
+    font-size: 0.88rem;
+  }
+  .source-link:hover {
+    border-color: var(--glacier);
+    color: var(--glacier);
+    transform: translateX(4px);
+  }
+  .source-icon { font-size: 1.4rem; }
+  .source-name { font-weight: 500; display: block; }
+  .source-desc { font-size: 0.75rem; color: var(--text-secondary); }
+
+  /* ─── GAME ─── */
+  #game { background: var(--anthracite); }
+  .game-wrapper {
+    max-width: 800px; margin: 0 auto;
+  }
+  .game-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;
+  }
+  .game-title-block {}
+  .game-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem; font-weight: 700;
+  }
+  .game-subtitle {
+    font-size: 0.82rem; color: var(--text-secondary);
+    margin-top: 0.25rem;
+  }
+  .game-stats {
+    display: flex; gap: 1.5rem;
+  }
+  .game-stat {
+    text-align: center;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 4px;
+    padding: 0.5rem 1rem;
+    min-width: 80px;
+  }
+  .game-stat-val {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem; font-weight: 700;
+    color: var(--glacier); display: block;
+  }
+  .game-stat-label {
+    font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--text-secondary);
+  }
+
+  /* Ice level bar */
+  .ice-level-container {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid var(--card-border);
+    border-radius: 2px; height: 20px;
+    margin-bottom: 0.5rem;
+    overflow: hidden; position: relative;
+  }
+  .ice-level-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--glacier), var(--ice));
+    transition: width 0.3s ease;
+    border-radius: 2px;
+  }
+  .ice-level-bar.critical { background: linear-gradient(90deg, #e74c3c, #ff6b35); }
+  .ice-level-bar.warning { background: linear-gradient(90deg, #f39c12, #ffc800); }
+  .ice-threshold {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem; color: var(--text-secondary);
+    display: flex; justify-content: space-between;
+    margin-bottom: 1.5rem;
+  }
+
+  /* Game arena */
+  #game-arena {
+    width: 100%; aspect-ratio: 16/9;
+    max-height: 400px;
+    background: radial-gradient(ellipse at top, #0d2a3e 0%, #060e1c 100%);
+    border: 1px solid var(--card-border);
+    border-radius: 4px;
+    position: relative; overflow: hidden;
+    cursor: crosshair;
+  }
+
+  /* Ocean floor */
+  #game-arena::after {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0; height: 20%;
+    background: linear-gradient(to top, rgba(10,30,60,0.8), transparent);
+  }
+
+  .ice-block {
+    position: absolute;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    transition: transform 0.1s;
+    user-select: none;
+    animation: iceFloat 3s ease-in-out infinite;
+  }
+  @keyframes iceFloat {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-5px) rotate(2deg); }
+  }
+  .ice-block:hover { transform: scale(1.05); }
+  .ice-block:active { transform: scale(0.9); }
+
+  .ice-block.melting {
+    animation: melt 0.5s ease forwards;
+  }
+  @keyframes melt {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.2); opacity: 0.5; }
+    100% { transform: scale(0); opacity: 0; }
+  }
+
+  .co2-cloud {
+    position: absolute;
+    cursor: pointer;
+    font-size: 1.6rem;
+    animation: driftUp 4s linear infinite;
+    user-select: none;
+  }
+  @keyframes driftUp {
+    0% { transform: translateY(0); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 0.8; }
+    100% { transform: translateY(-100px); opacity: 0; }
+  }
+  .co2-cloud:hover { filter: brightness(1.5); }
+
+  .click-effect {
+    position: absolute;
+    pointer-events: none;
+    border-radius: 50%;
+    border: 2px solid var(--glacier);
+    width: 40px; height: 40px;
+    transform: translate(-50%, -50%);
+    animation: ripple 0.5s ease forwards;
+  }
+  @keyframes ripple {
+    to { transform: translate(-50%, -50%) scale(3); opacity: 0; }
+  }
+
+  .score-pop {
+    position: absolute;
+    font-family: 'DM Mono', monospace;
+    font-size: 1rem; font-weight: 500;
+    color: var(--glacier);
+    pointer-events: none;
+    animation: scorePop 1s ease forwards;
+    z-index: 10;
+  }
+  @keyframes scorePop {
+    0% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(-50px); opacity: 0; }
+  }
+
+  .game-controls {
+    display: flex; gap: 1rem; margin-top: 1.5rem; justify-content: center;
+  }
+  .btn {
+    padding: 0.75rem 2rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem; font-weight: 500;
+    border-radius: 4px; border: none; cursor: pointer;
+    transition: all 0.2s; letter-spacing: 0.05em;
+  }
+  .btn-primary {
+    background: var(--glacier);
+    color: var(--deep-ocean);
+  }
+  .btn-primary:hover { background: var(--ice); transform: translateY(-2px); box-shadow: 0 8px 25px rgba(74,155,190,0.3); }
+  .btn-secondary {
+    background: transparent;
+    border: 1px solid var(--card-border);
+    color: var(--text-secondary);
+  }
+  .btn-secondary:hover { border-color: var(--glacier); color: var(--glacier); }
+
+  /* Game overlay */
+  #game-overlay {
+    position: absolute; inset: 0;
+    background: rgba(6, 14, 28, 0.92);
+    backdrop-filter: blur(6px);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center; padding: 2rem;
+    z-index: 20;
+  }
+  #game-overlay h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem; font-weight: 700;
+    margin-bottom: 1rem;
+  }
+  #game-overlay p {
+    font-size: 0.95rem; line-height: 1.7;
+    color: var(--text-secondary);
+    max-width: 500px; margin-bottom: 1.5rem;
+  }
+  #game-message {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 4px; padding: 1rem 1.5rem;
+    font-size: 0.88rem; line-height: 1.7;
+    color: var(--text-secondary);
+    max-width: 500px; margin-bottom: 1.5rem;
+    font-style: italic;
+  }
+  #game-message.hidden { display: none; }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--midnight);
+    border-top: 1px solid var(--card-border);
+    padding: 3rem 2rem;
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+  }
+  footer p { margin-bottom: 0.5rem; }
+  .footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem; color: var(--glacier);
+    margin-bottom: 1rem; display: block;
+  }
+
+  /* ─── DIVIDER ─── */
+  .section-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--card-border), transparent);
+    margin: 0;
+  }
+</style>
+</head>
+<body>
+
+<!-- ─── NAV ─── -->
+<nav>
+  <div class="nav-logo">L'Arctique </div>
+  <div class="nav-links">
+    <a href="#intro">Intro</a>
+    <a href="#albedo">Fonte</a>
+    <a href="#biodiversity">Faune</a>
+    <a href="#impact">Impact</a>
+    <a href="#geopolitics">Géopolitique</a>
+    <a href="#game">Jeu</a>
+    <button class="theme-toggle" onclick="toggleTheme()">◐ Thème</button>
+  </div>
+</nav>
+
+<!-- ─── HERO ─── -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="aurora"></div>
+  <div class="ice-particles" id="particles"></div>
+
+  <p class="hero-eyebrow"></p>
+  <h1 class="hero-title">
+    L'Arctique<br>
+    <span class="line-accent">et le</span>
+    climat mondial
+  </h1>
+  <p class="hero-subtitle">
+    Sur ce site vous verez pourquoi l'Arctique est si important pour nous et notre planète.
+
+  <div class="hero-authors">
+    Réalisé par : <strong>Bruce Owen</strong>, <strong>Pernin Inès</strong> &amp; <strong>Emmanuel Noah</strong>
+  </div>
+  <div class="hero-scroll">
+
+        <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ─── STATS BAR ─── -->
+<div class="stats-bar">
+  <div class="stat-item">
+    <span class="stat-value" data-target="3" data-suffix="×">0×</span>
+    <div class="stat-label">Plus vite que le reste du globe</div>
+  </div>
+  <div class="stat-item">
+    <span class="stat-value" data-target="75" data-suffix="%">0%</span>
+    <div class="stat-label">Volume de glace estival perdu depuis 1979</div>
+  </div>
+  <div class="stat-item">
+    <span class="stat-value" data-target="3.9" data-suffix=" m">0 m</span>
+    <div class="stat-label">Hausse potentielle des mers (Groenland seul)</div>
+  </div>
+  <div class="stat-item">
+    <span class="stat-value" data-target="2050" data-suffix="">0</span>
+    <div class="stat-label">1er été sans glace prévu</div>
+  </div>
+</div>
+
+<!-- ─── INTRO ─── -->
+<section id="intro">
+  <div class="container">
+    <div class="intro-grid">
+      <div>
+        <span class="section-tag reveal">Introduction</span>
+        <h2 class="section-title reveal">Le rôle de l'Arctique</h2>
+        <p class="section-lead reveal">
+          L'Arctique est une l'immense région autour du pôle Nord. Un océan recouvert de glace, des terres gelées et des icebergs vieux de milliers d'années. Cette région est particulièrement sensible au changement climatique. Elle se réchauffe beaucoup plus vite que le reste de la planète ce qui en fait un indicateur de l'état de la Terre.
+        </p>
+        <div class="cards-grid" style="grid-template-columns:1fr;">
+          <div class="card reveal">
+            <div class="card-title">Pourquoi l'Arctique se réchauffe-t-il si vite ?</div>
+            <div class="card-text">L'Arctique se réchauffe 3 à 4 fois plus vite que la moyenne mondiale. La raison principale est que quand la glace fond elle laisse place à de l'eau sombre qui absorbe beaucoup plus la chaleur du soleil. Ce phénomène s'appelle l'amplification polaire et il accélère lui-même la fonte.</div>
+          </div>
+          <div class="card reveal" style="transition-delay:0.15s">
+            <div class="card-title">Un rôle clé pour le climat mondial</div>
+            <div class="card-text">L'Arctique régule les grands courants marins et les vents atmosphériques qui influencent le temps qu'il fait en Europe, en Amérique et en Asie. Il stocke aussi d'énormes quantités de carbone dans ses sols gelés. Si ces sols dégèlent ce carbone sera libéré dans l'atmosphère.</div>
+          </div>
+        </div>
+      </div>
+      <div class="intro-visual" style="display:flex;flex-direction:column;gap:1.5rem;justify-content:center;">
+        <div class="card" style="opacity:1;transform:none;">
+          <div class="card-title" style="font-size:1rem;color:var(--glacier);margin-bottom:0.5rem;">Le saviez-vous ?</div>
+          <div class="card-text">En été 1979, la banquise couvrait environ 7 millions de km². En 2024 ce chiffre est tombé sous les 4 millions de km². C'est une surface équivalente à toute l'Europe occidentale qui a disparu en 45 ans.</div>
+        </div>
+        <div class="card" style="opacity:1;transform:none;">
+          <div class="card-title" style="font-size:1rem;color:var(--glacier);margin-bottom:0.5rem;">Le pergélisol, une bombe à retardement</div>
+          <div class="card-text">Sous la toundra arctique se trouvent des sols gelés depuis des milliers d'années appelés pergélisol. Ils contiennent d'énormes quantités de CO₂ et de méthane. Si ces sols continuent à dégeler ils libèreront ces gaz ce qui accélérera encore le réchauffement climatique.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ─── ALBEDO ─── -->
+<section id="albedo">
+  <div class="container">
+    <span class="section-tag reveal">La fonte des glaces et l'albédo</span>
+    <h2 class="section-title reveal">Un cercle vicieux</h2>
+    <p class="section-lead reveal">
+      L'albédo c'est la capacité d'une surface à renvoyer la lumière du soleil. La glace blanche réfléchit jusqu'à 90 % de l'énergie solaire vers l'espace. En revanche l'eau sombre de l'océan en absorbe 94 %. Quand la glace fond, l'océan se réchauffe davantage ce qui fait fondre encore plus de glace. On appelle cela une boucle de rétroaction positive donc chaque changement amplifie le suivant.
+    </p>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start;flex-wrap:wrap;">
+      <div>
+        <div class="feedback-loop">
+          <div class="loop-step reveal">
+            <span class="loop-badge">Point de départ</span>
+            Les activités humaines rejettent des gaz à effet de serre dans l'atmosphère (CO₂, méthane...)
+          </div>
+          <div class="loop-arrow reveal"></div>
+          <div class="loop-step reveal">
+            <strong>Conséquence 1</strong>
+            L'atmosphère se réchauffe. En Arctique, la température a augmenté de plus de 3°C depuis 1979.
+          </div>
+          <div class="loop-arrow reveal"></div>
+          <div class="loop-step reveal">
+            <strong>Conséquence 2</strong>
+            La banquise et les glaciers fondent plus vite chaque année.
+          </div>
+          <div class="loop-arrow reveal"></div>
+          <div class="loop-step reveal">
+            <strong>Conséquence 3</strong>
+            L'océan sombre, mis à nu, absorbe beaucoup plus de chaleur solaire (albédo qui chute de 90 % à 6 %).
+          </div>
+          <div class="loop-arrow reveal"></div>
+          <div class="loop-step reveal" style="border-color: rgba(255,107,53,0.4);">
+            <span class="loop-badge">Rétroaction positive</span>
+            Ce réchauffement supplémentaire accélère encore la fonte. On revient au début mais en pire.
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="card reveal">
+          <div class="card-title">Comparaison de l'albédo selon les surfaces</div>
+          <div style="margin-top:1rem;">
+            <div style="margin-bottom:1rem;">
+              <div style="display:flex;justify-content:space-between;font-size:0.8rem;color:var(--text-secondary);margin-bottom:4px;">
+                <span>Glace et neige</span><span>80 à 90 %</span>
+              </div>
+              <div style="background:rgba(0,0,0,0.3);border-radius:2px;height:10px;overflow:hidden;">
+                <div style="width:85%;height:100%;background:linear-gradient(90deg,var(--glacier),var(--ice));border-radius:2px;"></div>
+              </div>
+            </div>
+            <div style="margin-bottom:1rem;">
+              <div style="display:flex;justify-content:space-between;font-size:0.8rem;color:var(--text-secondary);margin-bottom:4px;">
+                <span>Nuages</span><span>50 à 70 %</span>
+              </div>
+              <div style="background:rgba(0,0,0,0.3);border-radius:2px;height:10px;overflow:hidden;">
+                <div style="width:60%;height:100%;background:linear-gradient(90deg,#7fb3c8,#a0cfe0);border-radius:2px;"></div>
+              </div>
+            </div>
+            <div style="margin-bottom:1rem;">
+              <div style="display:flex;justify-content:space-between;font-size:0.8rem;color:var(--text-secondary);margin-bottom:4px;">
+                <span>Forêt et végétation</span><span>10 à 25 %</span>
+              </div>
+              <div style="background:rgba(0,0,0,0.3);border-radius:2px;height:10px;overflow:hidden;">
+                <div style="width:18%;height:100%;background:linear-gradient(90deg,#2ecc71,#27ae60);border-radius:2px;"></div>
+              </div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:0.8rem;color:var(--text-secondary);margin-bottom:4px;">
+                <span>Océan sombre</span><span>6 %</span>
+              </div>
+              <div style="background:rgba(0,0,0,0.3);border-radius:2px;height:10px;overflow:hidden;">
+                <div style="width:6%;height:100%;background:linear-gradient(90deg,#e74c3c,#c0392b);border-radius:2px;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card reveal" style="margin-top:1.5rem;transition-delay:0.2s;">
+          <div class="card-title">      Le pergélisol     </div>
+          <div class="card-text">Le pergélisol est un sol qui reste gelé en permanence sous la surface. Il stocke deux fois plus de carbone que toute l'atmosphère actuelle. Quand il dégèle il libère du méthane (CH₄) un gaz qui réchauffe 80 fois plus que le CO₂ sur 20 ans. Cela crée une nouvelle boucle climatique.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ─── BIODIVERSITY ─── -->
+<section id="biodiversity">
+  <div class="container">
+    <span class="section-tag reveal">La biodiversité en péril</span>
+    <h2 class="section-title reveal">Des animaux menacés dans leur habitat</h2>
+    <p class="section-lead reveal">
+      L'Arctique abrite des espèces animales qui ont mis des millions d'années à s'adapter au froid extrême. En quelques décennies leur environnement change si vite qu'elles n'ont pas le temps de s'y habituer.
+    </p>
+    <div class="species-cards">
+      <div class="species-card reveal">
+        <div class="species-info" style="padding:1.5rem;">
+          <div class="species-name">L'ours polaire</div>
+          <span class="species-status status-vulnerable">Vulnérable (UICN)</span>
+          <div class="species-desc">L'ours polaire utilise la banquise comme plateforme pour chasser les phoques. Quand la glace fond trop tôt au printemps il ne peut plus chasser assez longtemps et maigrit. Les femelles gestantes sont les plus touchées. Si les tendances actuelles continuent on estime que les deux tiers des ours polaires auront disparu d'ici 2050.</div>
+        </div>
+      </div>
+      <div class="species-card reveal" style="transition-delay:0.15s;">
+        <div class="species-info" style="padding:1.5rem;">
+          <div class="species-name">Le morse de l'Atlantique</div>
+          <span class="species-status status-vulnerable">Vulnérable</span>
+          <div class="species-desc">Le morse se repose sur les plaques de glace entre ses plongées pour chercher des mollusques au fond de la mer. Sans glace des milliers de morses se retrouvent entassés sur des plages rocheuses où des piétinements provoquent des morts en masse. Le réchauffement de l'eau appauvrit aussi leurs sources de nourriture.</div>
+        </div>
+      </div>
+      <div class="species-card reveal" style="transition-delay:0.3s;">
+        <div class="species-info" style="padding:1.5rem;">
+          <div class="species-name">Le narval et le béluga</div>
+          <span class="species-status status-endangered">Quasi menacé</span>
+          <div class="species-desc">Ces deux baleines vivent dans les eaux froides de l'Arctique. Avec le recul de la glace des prédateurs du sud comme les orques pénètrent dans leur territoire. L'augmentation du trafic maritime en Arctique perturbe aussi leur communication par ultrasons pour se nourrir et se reproduire.</div>
+        </div>
+      </div>
+      <div class="species-card reveal" style="transition-delay:0.45s;">
+        <div class="species-info" style="padding:1.5rem;">
+          <div class="species-name">Le renard arctique</div>
+          <span class="species-status status-vulnerable">Localement menacé</span>
+          <div class="species-desc">Le renard arctique vit dans la toundra ouverte et enneigée. Avec le réchauffement son cousin le renard roux remonte vers le nord et lui vole son territoire et sa nourriture. La végétation qui pousse là où il n'y avait que glace et neige détruit également son habitat naturel.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ─── IMPACT ─── -->
+<section id="impact">
+  <div class="container">
+    <span class="section-tag reveal">L'impact global</span>
+    <h2 class="section-title reveal">Les conséquences sur le climat</h2>
+    <p class="section-lead reveal">
+       Ce qui s'y passe dans l'Arctique modifie le climat en Europe, en Amérique, Asie et en Afrique. Des millions de personnes vivant en bord de mer sont aussi directement menacées par la montée des eaux.
+    </p>
+    <div class="impact-grid">
+      <div>
+        <div class="impact-item reveal">
+          <div class="impact-num">01</div>
+          <div class="impact-title">La montée du niveau des mers</div>
+          <div class="impact-text">Quand les glaciers fondent l'eau se déverse dans les océans et fait monter le niveau marin. D'ici 2100 les experts prévoient une hausse comprise entre 30 cm et 1 mètre selon les scénarios. Le Groenland seul pourrait faire monter les mers de 7 mètres si toute sa glace disparaissait. Des villes comme Dhaka, Miami, Jakarta ou Amsterdam sont directement menacées.</div>
+        </div>
+        <div class="impact-item reveal" style="transition-delay:0.2s;margin-top:2rem;">
+          <div class="impact-num">02</div>
+          <div class="impact-title">La perturbation du Jet Stream</div>
+          <div class="impact-text">Le Jet Stream est un courant de vent très puissant qui tourne autour du pôle Nord et sépare l'air froid arctique de l'air chaud des régions tempérées. Avec le réchauffement, ce courant devient moins stable et fait de grandes boucles et donc du froid arctique peut descendre en hiver et des chaleurs extrêmes peuvent remonter vers le nord en été.</div>
+        </div>
+        <div class="impact-item reveal" style="transition-delay:0.4s;margin-top:2rem;">
+          <div class="impact-num">03</div>
+          <div class="impact-title">Le ralentissement du Gulf Stream</div>
+          <div class="impact-text">Le Gulf Stream est un courant océanique chaud qui réchauffe l'Europe du Nord. Il fonctionne grâce à des différences de température entre l'Atlantique et l'Arctique. Mais l'eau douce issue de la fonte du Groenland perturbe ce mécanisme. Si le Gulf Stream ralentit trop, l'Europe du Nord pourrait connaître des hivers bien plus froids.</div>
+        </div>
+      </div>
+      <div>
+        <div class="chart-container reveal">
+          <div class="chart-title">Anomalie de température en Arctique (en °C) par rapport à la normale 1971-2000</div>
+          <div class="temp-chart" id="tempChart">
+            <!-- filled by JS -->
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:0.65rem;color:var(--text-secondary);margin-top:0.5rem;font-family:'DM Mono',monospace;">
+            <span>1980</span><span>1990</span><span>2000</span><span>2010</span><span>2024</span>
+          </div>
+        </div>
+        <div class="card reveal" style="margin-top:1.5rem;transition-delay:0.3s;">
+          <div class="card-title">L'acidification des océans</div>
+          <div class="card-text">Le CO₂ que les océans arctiques absorbent se transforme en acide carbonique. Cette acidification attaque les coquilles des mollusques et des crustacés fragilise toute la chaîne alimentaire marine et nuit à la reproduction du krill, une minuscule crevette dont dépendent les baleines et de nombreux poissons.</div>
+        </div>
+        <div class="card reveal" style="margin-top:1rem;transition-delay:0.45s;">
+          <div class="card-title">Des événements météo plus extrêmes</div>
+          <div class="card-text">Des études scientifiques récentes montrent un lien direct entre la réduction de la banquise arctique et l'augmentation des épisodes de froid intense en Europe, des vagues de chaleur prolongées, des sécheresses et des inondations plus fréquentes. Le dérèglement de l'Arctique déstabilise les saisons partout dans le monde.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ─── GEOPOLITICS ─── -->
+<section id="geopolitics">
+  <div class="container">
+    <span class="section-tag reveal">Les enjeux géopolitiques</span>
+    <h2 class="section-title reveal">L'Arctique, un nouveau terrain de conflits</h2>
+    <p class="section-lead reveal">
+      À mesure que la glace disparaît, des zones autrefois totalement inaccessibles s'ouvrent. Des routes maritimes nouvelles, des ressources naturelles et des revendications de territoire font de l'Arctique un enjeu géopolitique important.
+    </p>
+    <div class="geo-grid">
+      <div class="geo-card reveal">
+        <div class="geo-card-header">
+          <div class="geo-card-title">De nouvelles routes maritimes</div>
+        </div>
+        <div class="geo-card-text">Le passage du Nord-Est le long des côtes russes est maintenant navigable plusieurs semaines par an grâce à la fonte de la glace. Cette route réduit de 40 % la distance entre l'Europe et l'Asie par rapport au canal de Suez. La Russie affirme sa souveraineté sur ce passage et exige des droits de transit aux navires étrangers.</div>
+      </div>
+      <div class="geo-card reveal" style="transition-delay:0.15s;">
+        <div class="geo-card-header">
+          <div class="geo-card-title">Des ressources naturelles convoitées</div>
+        </div>
+        <div class="geo-card-text">Selon l'Institut géologique américain (USGS) l'Arctique contiendrait 13 % des réserves mondiales de pétrole non encore découvertes et 30 % du gaz naturel. La Russie, la Norvège, le Canada, les États-Unis et le Danemark (qui administre le Groenland) se disputent les droits d'exploitation dans cette région.</div>
+      </div>
+      <div class="geo-card reveal" style="transition-delay:0.3s;">
+        <div class="geo-card-header">
+          <div class="geo-card-title">Une présence militaire en hausse</div>
+        </div>
+        <div class="geo-card-text">La Russie a rouvert d'anciennes bases militaires soviétiques en Arctique et y déploie des sous-marins nucléaires. L'OTAN renforce sa présence en Norvège et au Canada. La Chine qui n'a pas de territoire arctique, se proclame "État quasi-arctique" et investit massivement dans des recherches et des infrastructures dans la région.</div>
+      </div>
+      <div class="geo-card reveal" style="transition-delay:0.45s;">
+        <div class="geo-card-header">
+          <div class="geo-card-title">Les peuples autochtones </div>
+        </div>
+        <div class="geo-card-text">Les Inuits, les Sámi, les Yupik et d'autres peuples autochtones vivent en Arctique depuis des millénaires. Leurs modes de vie sont directement menacés car les routes de chasse sur la glace deviennent impraticables, les habitations construites sur le pergélisol s'effondrent à mesure qu'il dégèle, et leur alimentation traditionnelle est contaminée par des polluants qui se concentrent dans la chaîne alimentaire arctique.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ─── SOURCES ─── -->
+<section id="sources">
+  <div class="container">
+    <span class="section-tag reveal">  Sources et Références</span>
+    <h2 class="section-title reveal">Pour aller plus loin</h2>
+    <p class="section-lead reveal">
+          </p>
+    <div class="sources-grid">
+      <a href="https://www.ipcc.ch" target="_blank" class="source-link">
+        <span class="source-icon"></span>
+        <div>
+          <span class="source-name">GIEC (IPCC)</span>
+          <span class="source-desc">Rapports AR6 sur le changement climatique</span>
+        </div>
+      </a>
+      <a href="https://climate.nasa.gov/vital-signs/arctic-sea-ice/" target="_blank" class="source-link">
+        <span class="source-icon"></span>
+        <div>
+          <span class="source-name">NASA Climate</span>
+          <span class="source-desc">Données satellites sur la glace arctique</span>
+        </div>
+      </a>
+      <a href="https://arctic.noaa.gov/report-card" target="_blank" class="source-link">
+        <span class="source-icon"></span>
+        <div>
+          <span class="source-name">NOAA Arctic Report Card</span>
+          <span class="source-desc">Rapport annuel sur l'état de l'Arctique</span>
+        </div>
+      </a>
+      <a href="https://nsidc.org" target="_blank" class="source-link">
+        <span class="source-icon"></span>
+        <div>
+          <span class="source-name">NSIDC</span>
+          <span class="source-desc">National Snow and Ice Data Center</span>
+        </div>
+      </a>
+      <a href="https://www.worldwildlife.org/places/arctic" target="_blank" class="source-link">
+        <span class="source-icon"></span>
+        <div>
+          <span class="source-name">WWF Arctic</span>
+          <span class="source-desc">Biodiversité et conservation arctique</span>
+        </div>
+      </a>
+      <a href="https://ocean.si.edu/ocean-life/fish/arctic-ocean" target="_blank" class="source-link">
+        <span class="source-icon"></span>
+        <div>
+          <span class="source-name">Smithsonian Ocean</span>
+          <span class="source-desc">Écosystèmes marins arctiques</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ─── GAME ─── -->
+<section id="game">
+  <div class="container">
+    <div class="game-wrapper">
+      <span class="section-tag reveal">  Mini-Jeu </span>
+      <div class="game-header">
+        <div class="game-title-block">
+          <div class="game-title"> Sauve la Banquise</div>
+          <div class="game-subtitle">Clique sur les émissions de CO₂ et les blocs de glace qui fondent pour maintenir le niveau de glace !</div>
+        </div>
+        <div class="game-stats">
+          <div class="game-stat">
+            <span class="game-stat-val" id="score-display">0</span>
+            <span class="game-stat-label">Score</span>
+          </div>
+          <div class="game-stat">
+            <span class="game-stat-val" id="timer-display">60</span>
+            <span class="game-stat-label">Secondes</span>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:var(--text-secondary);font-family:'DM Mono',monospace;margin-bottom:4px;">
+          <span> Niveau de glace</span>
+          <span id="ice-pct">100%</span>
+        </div>
+        <div class="ice-level-container">
+          <div class="ice-level-bar" id="ice-bar" style="width:100%"></div>
+        </div>
+        <div class="ice-threshold">
+          <span> Seuil critique : 30%</span>
+          <span> Objectif : maintenir au-dessus</span>
+        </div>
+      </div>
+
+      <div id="game-arena">
+        <div id="game-overlay">
+          <h3> Sauve la Banquise</h3>
+          <p>Clique sur les nuages de CO₂ ☁️ pour les détruire et sur les blocs de glace 🟦 qui clignotent pour les stabiliser. Maintiens le niveau de glace au-dessus de 30% aussi longtemps que possible !</p>
+          <div id="game-message" class="hidden"></div>
+          <div style="display:flex;gap:1rem;">
+            <button class="btn btn-primary" onclick="startGame()">▶ Commencer</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="game-controls">
+        <button class="btn btn-primary" id="restart-btn" onclick="startGame()" style="display:none;"> Rejouer</button>
+        <button class="btn btn-secondary" onclick="pauseGame()">⏸ Pause</button>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <span class="footer-logo">🧊 L'Arctique </span>
+  <p>Un projet réalisé dans le cadre d'un travail de groupe</p>
+  <p style="margin-top:0.25rem;"><strong style="color:var(--glacier);">Bruce Owen · Pernin Inès · Emmanuel Noah</strong></p>
+  <p style="margin-top:1rem;opacity:0.5;font-size:0.75rem;">.</p>
+</footer>
+
+<script>
+  // ─── PARTICLES ───
+  function createParticles() {
+    const container = document.getElementById('particles');
+    for (let i = 0; i < 25; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.left = Math.random() * 100 + '%';
+      p.style.animationDuration = (8 + Math.random() * 12) + 's';
+      p.style.animationDelay = (Math.random() * 10) + 's';
+      p.style.width = p.style.height = (2 + Math.random() * 4) + 'px';
+      p.style.opacity = 0;
+      container.appendChild(p);
+    }
+  }
+  createParticles();
+
+  // ─── THEME ───
+  function toggleTheme() {
+    const html = document.documentElement;
+    html.dataset.theme = html.dataset.theme === 'dark' ? 'light' : 'dark';
+  }
+
+  // ─── SCROLL REVEAL ───
+  const revealEls = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('visible');
+    });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => observer.observe(el));
+
+  // ─── STATS COUNTER ───
+  const statsObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && !e.target.dataset.counted) {
+        e.target.dataset.counted = 'true';
+        const els = e.target.querySelectorAll('[data-target]');
+        els.forEach(el => {
+          const target = parseFloat(el.dataset.target);
+          const suffix = el.dataset.suffix || '';
+          const isInt = Number.isInteger(target);
+          let start = 0;
+          const duration = 1500;
+          const step = (timestamp) => {
+            if (!start) start = timestamp;
+            const progress = Math.min((timestamp - start) / duration, 1);
+            const val = target * progress;
+            el.textContent = (isInt ? Math.floor(val) : val.toFixed(1)) + suffix;
+            if (progress < 1) requestAnimationFrame(step);
+          };
+          requestAnimationFrame(step);
+        });
+      }
+    });
+  }, { threshold: 0.5 });
+  statsObs.observe(document.querySelector('.stats-bar'));
+
+  // ─── TEMP CHART ───
+  const tempData = [0.2, 0.3, 0.5, 0.4, 0.7, 0.8, 0.6, 0.9, 1.1, 1.0, 1.3, 1.5, 1.4, 1.7, 1.9, 2.1, 2.0, 2.3, 2.5, 2.8, 2.6, 2.9, 3.2, 3.5];
+  const chart = document.getElementById('tempChart');
+  const maxVal = Math.max(...tempData);
+  tempData.forEach((v, i) => {
+    const bar = document.createElement('div');
+    bar.className = 'temp-bar';
+    bar.style.height = (v / maxVal * 90) + '%';
+    const intensity = v / maxVal;
+    bar.style.background = `linear-gradient(to top, rgba(74,155,190,${0.4 + intensity * 0.6}), rgba(255,107,53,${intensity * 0.7}))`;
+    bar.setAttribute('data-val', '+' + v.toFixed(1) + '°C');
+    chart.appendChild(bar);
+  });
+
+  // ─── GAME ENGINE ───
+  let gameState = {
+    running: false,
+    paused: false,
+    score: 0,
+    iceLevel: 100,
+    timeLeft: 60,
+    intervals: [],
+    elements: []
+  };
+
+  const arena = document.getElementById('game-arena');
+  const overlay = document.getElementById('game-overlay');
+  const scoreDisplay = document.getElementById('score-display');
+  const timerDisplay = document.getElementById('timer-display');
+  const iceBar = document.getElementById('ice-bar');
+  const icePct = document.getElementById('ice-pct');
+  const gameMsg = document.getElementById('game-message');
+
+  function clearGame() {
+    gameState.intervals.forEach(id => clearInterval(id));
+    gameState.intervals = [];
+    gameState.elements.forEach(el => el.remove());
+    gameState.elements = [];
+    arena.querySelectorAll('.ice-block,.co2-cloud,.click-effect,.score-pop').forEach(el => el.remove());
+  }
+
+  function startGame() {
+    clearGame();
+    gameState.running = true;
+    gameState.paused = false;
+    gameState.score = 0;
+    gameState.iceLevel = 100;
+    gameState.timeLeft = 60;
+    overlay.style.display = 'none';
+    document.getElementById('restart-btn').style.display = 'none';
+    updateUI();
+
+    const iceInterval = setInterval(() => {
+      if (!gameState.running || gameState.paused) return;
+      gameState.iceLevel = Math.max(0, gameState.iceLevel - 0.8);
+      updateUI();
+      if (gameState.iceLevel <= 0) endGame('collapse');
+    }, 200);
+
+    const timerInterval = setInterval(() => {
+      if (!gameState.running || gameState.paused) return;
+      gameState.timeLeft--;
+      timerDisplay.textContent = gameState.timeLeft;
+      if (gameState.timeLeft <= 0) endGame('timeout');
+    }, 1000);
+
+    const spawnIce = setInterval(() => {
+      if (!gameState.running || gameState.paused) return;
+      if (Math.random() < 0.7) spawnIceBlock();
+    }, 1200);
+
+    const spawnCO2 = setInterval(() => {
+      if (!gameState.running || gameState.paused) return;
+      spawnCO2Cloud();
+    }, 1600);
+
+    gameState.intervals.push(iceInterval, timerInterval, spawnIce, spawnCO2);
+  }
+
+  function spawnIceBlock() {
+    const el = document.createElement('div');
+    el.className = 'ice-block';
+    const size = 50 + Math.random() * 30;
+    el.style.width = size + 'px';
+    el.style.height = size + 'px';
+    el.style.left = (5 + Math.random() * 80) + '%';
+    el.style.top = (10 + Math.random() * 70) + '%';
+    el.style.background = `rgba(${74 + Math.random()*50}, ${155 + Math.random()*50}, 190, ${0.3 + Math.random()*0.4})`;
+    el.style.border = '1px solid rgba(200,232,245,0.4)';
+    el.textContent = ['🧊','❄️','🌨️'][Math.floor(Math.random()*3)];
+    el.style.animationDelay = (Math.random() * 2) + 's';
+
+    let meltTimer = setTimeout(() => {
+      if (!el.parentNode) return;
+      gameState.iceLevel = Math.max(0, gameState.iceLevel - 3);
+      updateUI();
+      if (gameState.iceLevel <= 0) endGame('collapse');
+      el.remove();
+    }, 3000 + Math.random() * 2000);
+
+    el.addEventListener('click', (e) => {
+      clearTimeout(meltTimer);
+      const pts = 10;
+      gameState.score += pts;
+      gameState.iceLevel = Math.min(100, gameState.iceLevel + 5);
+      scoreDisplay.textContent = gameState.score;
+      showScorePop(e, '+' + pts);
+      showClickEffect(e);
+      el.classList.add('melting');
+      setTimeout(() => el.remove(), 500);
+      updateUI();
+    });
+
+    arena.appendChild(el);
+    gameState.elements.push(el);
+  }
+
+  function spawnCO2Cloud() {
+    const el = document.createElement('div');
+    el.className = 'co2-cloud';
+    el.style.left = (5 + Math.random() * 85) + '%';
+    el.style.bottom = (10 + Math.random() * 40) + '%';
+    el.textContent = ['☁️','🌫️','💨'][Math.floor(Math.random()*3)];
+    el.style.fontSize = (1.2 + Math.random() * 0.8) + 'rem';
+    el.style.animationDuration = (3 + Math.random() * 3) + 's';
+
+    const dmg = 2 + Math.random() * 3;
+    let dmgTimer = setInterval(() => {
+      if (!el.parentNode) { clearInterval(dmgTimer); return; }
+      gameState.iceLevel = Math.max(0, gameState.iceLevel - dmg * 0.2);
+      updateUI();
+      if (gameState.iceLevel <= 0) endGame('collapse');
+    }, 300);
+
+    el.addEventListener('click', (e) => {
+      clearInterval(dmgTimer);
+      const pts = 15;
+      gameState.score += pts;
+      scoreDisplay.textContent = gameState.score;
+      showScorePop(e, '+' + pts + ' CO₂ 💨');
+      showClickEffect(e);
+      el.style.animation = 'melt 0.4s ease forwards';
+      setTimeout(() => el.remove(), 400);
+    });
+
+    setTimeout(() => {
+      clearInterval(dmgTimer);
+      if (el.parentNode) el.remove();
+    }, 6000);
+
+    arena.appendChild(el);
+    gameState.elements.push(el);
+  }
+
+  function showClickEffect(e) {
+    const rect = arena.getBoundingClientRect();
+    const fx = document.createElement('div');
+    fx.className = 'click-effect';
+    fx.style.left = (e.clientX - rect.left) + 'px';
+    fx.style.top = (e.clientY - rect.top) + 'px';
+    arena.appendChild(fx);
+    setTimeout(() => fx.remove(), 600);
+  }
+
+  function showScorePop(e, text) {
+    const rect = arena.getBoundingClientRect();
+    const pop = document.createElement('div');
+    pop.className = 'score-pop';
+    pop.textContent = text;
+    pop.style.left = (e.clientX - rect.left - 20) + 'px';
+    pop.style.top = (e.clientY - rect.top - 10) + 'px';
+    arena.appendChild(pop);
+    setTimeout(() => pop.remove(), 1000);
+  }
+
+  function updateUI() {
+    const pct = Math.round(gameState.iceLevel);
+    iceBar.style.width = pct + '%';
+    icePct.textContent = pct + '%';
+    iceBar.className = 'ice-level-bar';
+    if (pct <= 30) iceBar.classList.add('critical');
+    else if (pct <= 60) iceBar.classList.add('warning');
+  }
+
+  function pauseGame() {
+    if (!gameState.running) return;
+    gameState.paused = !gameState.paused;
+  }
+
+  function endGame(reason) {
+    gameState.running = false;
+    clearGame();
+    overlay.style.display = 'flex';
+    document.getElementById('restart-btn').style.display = 'block';
+    gameMsg.classList.remove('hidden');
+
+    const score = gameState.score;
+    let title, msg, msgClass;
+
+    if (reason === 'collapse') {
+      title = ' La banquise a fondu…';
+      if (score < 50) {
+        msg = ' Le niveau de glace est tombé à zéro. Chaque tonne de CO₂ émise aggrave la situation. En 2024, l\'Arctique a atteint ses plus bas niveaux de glace jamais enregistrés. Il n\'est pas trop tard. chaque geste compte : mobilité douce, alimentation végétale, isolation thermique.';
+      } else if (score < 150) {
+        msg = ' Vous avez bien lutté, mais le rythme d\'émission a été trop fort. Cela reflète notre réalité : malgré les efforts individuels, sans action systémique (politique énergétique, industrie, transport), l\'inertie climatique l\'emporte.';
+      } else {
+        msg = ' Votre score montre que vous comprenez l\'urgence ! La réalité est que des milliards de gestes individuels combinés à des politiques ambitieuses peuvent faire la différence. Le GIEC estime que limiter le réchauffement à 1,5°C est encore possible mais la fenêtre se ferme.';
+      }
+    } else {
+      title = ' Temps écoulé — Score final : ' + score;
+      if (score < 100) {
+        msg = ' Score de ' + score + ' points. L\'Arctique a besoin d\'alliés ! Le changement climatique n\'est pas une fatalité : en réduisant nos émissions de 45% d\'ici 2030, nous pouvons préserver une grande partie de la banquise estivale. Commencez par de petits gestes : transport, consommation d\'énergie, alimentation.';
+      } else if (score < 250) {
+        msg = ' Score honorable de ' + score + ' points ! Vous avez compris que chaque action compte. Saviez-vous qu\'un seul vol transatlantique émet autant de CO₂ que plusieurs mois de transport quotidien ? L\'Arctique est notre baromètre — agir maintenant, c\'est préserver les équilibres du futur.';
+      } else {
+        msg = ' Excellent score de ' + score + ' ! Vous êtes un défenseur de l\'Arctique. Cette vigilance est exactement ce dont la planète a besoin. Partagez vos connaissances, engagez-vous pour des politiques climatiques ambitieuses, et souvenez-vous : l\'Arctique n\'est pas ailleurs — ses bouleversements influencent notre météo, nos mers et nos ressources dès aujourd\'hui.';
+      }
+    }
+
+    overlay.innerHTML = `
+      <h3>${title}</h3>
+      <p>Score final : <strong style="color:var(--glacier)">${score} points</strong> · Temps tenu : ${60 - gameState.timeLeft}s</p>
+      <div id="game-message" style="background:var(--card-bg);border:1px solid var(--card-border);border-radius:4px;padding:1rem 1.5rem;font-size:0.88rem;line-height:1.7;color:var(--text-secondary);max-width:500px;margin-bottom:1.5rem;font-style:italic;">${msg}</div>
+      <div style="display:flex;gap:1rem;">
+        <button class="btn btn-primary" onclick="startGame()"> Rejouer</button>
+        <button class="btn btn-secondary" onclick="document.getElementById('intro').scrollIntoView({behavior:'smooth'})"> Retourner à la présentation</button>
+      </div>
+    `;
+  }
+</script>
+
+</body>
+</html>
